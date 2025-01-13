@@ -1,0 +1,39 @@
+Look at the above account_json and focus on the 'account_name' value for each of the ${BLOCK} JSON objects in the account JSON array. 
+
+Then, look at the organization_json and focus on the 'organization_name' value for each of the ${BLOCK} JSON objects in the organization array, and based on your expert knowledge of global organization entities: for each of the account_names, return the following
+1) ‘account_id’: the account id from the original account JSON with no changes.
+2) ‘account_name’: tthe account name from the original account JSON with no changes.
+3) 'organization_id': the original id provided, this must not change from the original input;
+4) 'organization_name': the name of the organization from the organization text that best matches the organization_standard, ’Not Matched’ if it can’t be found 
+5) ‘account match’: Y or N if the account name can be matched to the organization list
+6) ‘confidence_score’: a score 0 to 100 of how confident you are in the match
+
+This is example JSON output:
+[
+  {
+    "account_id": "0012J00002J4lDQ",
+    "account_name": "Microsoft Corporation",
+    "organization_id": 345,
+    "organization_name": "Microsoft",
+    "account_match": "Y",
+    "confidence_score": 95
+  },
+  {
+    "account_id": "1092J00002FAlDQ",
+    "account_name": "Pfizer, Inc.",
+    "organization_id": 1933,
+    "organization_name": "Pfizer",
+    "account_match": "Y",
+    "confidence_score": 95
+  },
+  {
+    "account_id": "0015000000HumcC",
+    "account_name": "xxxxx Inc",
+    "organization_id": 0,
+    "organization_name": "Not Matched",
+    "account_match": "N",
+    "confidence_score": 0
+  }
+]
+ 
+
