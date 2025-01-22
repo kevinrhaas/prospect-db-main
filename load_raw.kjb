@@ -383,7 +383,7 @@
       <attributes/>
       <specification_method>filename</specification_method>
       <trans_object_id/>
-      <filename>/Users/khaas/Library/CloudStorage/OneDrive-HitachiVantara/Teams/ASG - General/Customers/Pentaho/MarketingInsights/main/raw_ce_accounts_sourceforge.ktr</filename>
+      <filename>${Internal.Entry.Current.Directory}/raw_ce_accounts_sourceforge.ktr</filename>
       <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
@@ -422,7 +422,7 @@
       <attributes/>
       <specification_method>filename</specification_method>
       <trans_object_id/>
-      <filename>/Users/khaas/Library/CloudStorage/OneDrive-HitachiVantara/Teams/ASG - General/Customers/Pentaho/MarketingInsights/main/raw_ce_ee_lead_interest.ktr</filename>
+      <filename>${Internal.Entry.Current.Directory}/raw_ce_ee_lead_interest.ktr</filename>
       <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
@@ -461,7 +461,7 @@
       <attributes/>
       <specification_method>filename</specification_method>
       <trans_object_id/>
-      <filename>/Users/khaas/Library/CloudStorage/OneDrive-HitachiVantara/Teams/ASG - General/Customers/Pentaho/MarketingInsights/main/raw_form_submits_community_edition_sign_up_form.ktr</filename>
+      <filename>${Internal.Entry.Current.Directory}/raw_form_submits_community_edition_sign_up_form.ktr</filename>
       <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
@@ -500,7 +500,7 @@
       <attributes/>
       <specification_method>filename</specification_method>
       <trans_object_id/>
-      <filename>/Users/khaas/Library/CloudStorage/OneDrive-HitachiVantara/Teams/ASG - General/Customers/Pentaho/MarketingInsights/main/raw_form_submits_community_edition_sign_up_form.ktr</filename>
+      <filename>${Internal.Entry.Current.Directory}/raw_form_submits_community_edition_sign_up_form.ktr</filename>
       <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
