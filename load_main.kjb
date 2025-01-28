@@ -382,7 +382,7 @@
       <attributes/>
       <specification_method>filename</specification_method>
       <trans_object_id/>
-      <filename>/Users/khaas/Library/CloudStorage/OneDrive-HitachiVantara/Teams/ASG - General/Customers/Pentaho/MarketingInsights/main/load_main_config.ktr</filename>
+      <filename>${Internal.Entry.Current.Directory}/load_main_config.ktr</filename>
       <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
