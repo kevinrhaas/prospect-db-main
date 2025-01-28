@@ -481,7 +481,7 @@
       </attribute>
       <attribute>
         <code>PREFERRED_SCHEMA_NAME</code>
-        <attribute>marketing</attribute>
+        <attribute>${SCHEMA}</attribute>
       </attribute>
       <attribute>
         <code>PRESERVE_RESERVED_WORD_CASE</code>
@@ -1236,7 +1236,7 @@ This is example JSON output:
     <sql>SELECT
 id,
 organization_standard
-FROM "marketing"."dim_organization" dimo
+FROM ${SCHEMA}."dim_organization" dimo
 where dimo.is_organization = 'Y'
 
 </sql>
@@ -1320,7 +1320,7 @@ where dimo.is_organization = 'Y'
       <schema_name/>
     </partitioning>
     <connection>MARKETING</connection>
-    <schema>marketing</schema>
+    <schema>${SCHEMA}</schema>
     <table>ai_enhance_organization</table>
     <commit>100</commit>
     <truncate>Y</truncate>

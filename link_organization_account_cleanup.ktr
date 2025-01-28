@@ -496,7 +496,7 @@
       </attribute>
       <attribute>
         <code>PREFERRED_SCHEMA_NAME</code>
-        <attribute>marketing</attribute>
+        <attribute>${SCHEMA}</attribute>
       </attribute>
       <attribute>
         <code>PRESERVE_RESERVED_WORD_CASE</code>
@@ -528,6 +528,43 @@
     </hop>
   </order>
   <step>
+    <name>Delete from ai_link_organization_account</name>
+    <type>Delete</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>MARKETING</connection>
+    <commit>100</commit>
+    <lookup>
+      <schema>${SCHEMA}</schema>
+      <table>ai_link_organization_account</table>
+      <key>
+        <name>block_num</name>
+        <field>block_num</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+    </lookup>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>608</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
     <name>ti: list of partially complete blocks</name>
     <type>TableInput</type>
     <description/>
@@ -541,10 +578,10 @@
     <connection>MARKETING</connection>
     <sql>SELECT
   "block_num"
-FROM "marketing"."ai_link_organization_account"
+FROM ${SCHEMA}."ai_link_organization_account"
 group by "block_num"
 having count(*) &lt; 
-(select max("block_lkp_num") FROM "marketing"."ai_link_organization_lkp")</sql>
+(select max("block_lkp_num") FROM ${SCHEMA}."ai_link_organization_lkp")</sql>
     <limit/>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -586,43 +623,6 @@ having count(*) &lt;
     </remotesteps>
     <GUI>
       <xloc>304</xloc>
-      <yloc>144</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Delete from ai_link_organization_account</name>
-    <type>Delete</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>MARKETING</connection>
-    <commit>100</commit>
-    <lookup>
-      <schema>marketing</schema>
-      <table>ai_link_organization_account</table>
-      <key>
-        <name>block_num</name>
-        <field>block_num</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-    </lookup>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>608</xloc>
       <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>

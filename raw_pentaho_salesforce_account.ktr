@@ -486,7 +486,7 @@
       </attribute>
       <attribute>
         <code>PREFERRED_SCHEMA_NAME</code>
-        <attribute>marketing</attribute>
+        <attribute>${SCHEMA}</attribute>
       </attribute>
       <attribute>
         <code>PRESERVE_RESERVED_WORD_CASE</code>
@@ -603,6 +603,60 @@
     </GUI>
   </step>
   <step>
+    <name>JSON output</name>
+    <type>JsonOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <outputValue>outputValue</outputValue>
+    <jsonBloc>account</jsonBloc>
+    <nrRowsInBloc>10000000</nrRowsInBloc>
+    <operation_type>both</operation_type>
+    <compatibility_mode>N</compatibility_mode>
+    <encoding>UTF-8</encoding>
+    <addtoresult>N</addtoresult>
+    <file>
+      <name>${TEMP_PATH}account</name>
+      <extention>js</extention>
+      <append>N</append>
+      <split>N</split>
+      <haspartno>N</haspartno>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <create_parent_folder>N</create_parent_folder>
+      <DoNotOpenNewFileInit>N</DoNotOpenNewFileInit>
+      <servlet_output>N</servlet_output>
+    </file>
+    <fields>
+      <field>
+        <name>Account_ID</name>
+        <element>Account_ID</element>
+      </field>
+      <field>
+        <name>Account_Name</name>
+        <element>Account_Name</element>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>656</xloc>
+      <yloc>224</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
     <name>Table output</name>
     <type>TableOutput</type>
     <description/>
@@ -614,7 +668,7 @@
       <schema_name/>
     </partitioning>
     <connection>MARKETING</connection>
-    <schema>marketing</schema>
+    <schema>${SCHEMA}</schema>
     <table>raw_pentaho_salesforce_account</table>
     <commit>1000</commit>
     <truncate>Y</truncate>
@@ -977,60 +1031,6 @@
     <GUI>
       <xloc>112</xloc>
       <yloc>128</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>JSON output</name>
-    <type>JsonOutput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <outputValue>outputValue</outputValue>
-    <jsonBloc>account</jsonBloc>
-    <nrRowsInBloc>10000000</nrRowsInBloc>
-    <operation_type>both</operation_type>
-    <compatibility_mode>N</compatibility_mode>
-    <encoding>UTF-8</encoding>
-    <addtoresult>N</addtoresult>
-    <file>
-      <name>${TEMP_PATH}account</name>
-      <extention>js</extention>
-      <append>N</append>
-      <split>N</split>
-      <haspartno>N</haspartno>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <create_parent_folder>N</create_parent_folder>
-      <DoNotOpenNewFileInit>N</DoNotOpenNewFileInit>
-      <servlet_output>N</servlet_output>
-    </file>
-    <fields>
-      <field>
-        <name>Account_ID</name>
-        <element>Account_ID</element>
-      </field>
-      <field>
-        <name>Account_Name</name>
-        <element>Account_Name</element>
-      </field>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>656</xloc>
-      <yloc>224</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

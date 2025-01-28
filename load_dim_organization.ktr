@@ -461,12 +461,16 @@
         <attribute>N</attribute>
       </attribute>
       <attribute>
+        <code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
         <code>PORT_NUMBER</code>
         <attribute>5433</attribute>
       </attribute>
       <attribute>
         <code>PREFERRED_SCHEMA_NAME</code>
-        <attribute>marketing_prod</attribute>
+        <attribute>${SCHEMA}</attribute>
       </attribute>
       <attribute>
         <code>PRESERVE_RESERVED_WORD_CASE</code>
@@ -684,7 +688,7 @@
     <commit>100</commit>
     <update_bypassed>N</update_bypassed>
     <lookup>
-      <schema/>
+      <schema>${SCHEMA}</schema>
       <table>dim_organization</table>
       <key>
         <name>organization_standard</name>
@@ -824,7 +828,7 @@
 , "is_organization"
 , "confidence_score"
 , "api_result"
-FROM "marketing"."clean_organization"
+FROM ${SCHEMA}."clean_organization"
 </sql>
     <limit>0</limit>
     <lookup/>

@@ -476,7 +476,7 @@
       </attribute>
       <attribute>
         <code>PREFERRED_SCHEMA_NAME</code>
-        <attribute>marketing</attribute>
+        <attribute>${SCHEMA}</attribute>
       </attribute>
       <attribute>
         <code>PRESERVE_RESERVED_WORD_CASE</code>
@@ -635,7 +635,7 @@
 , "IsCompany"
 , "source_name"
 , "source_date"
-FROM "marketing"."raw_hv_community_contact_export"
+FROM ${SCHEMA}."raw_hv_community_contact_export"
 </sql>
     <limit>0</limit>
     <lookup/>
@@ -1476,7 +1476,7 @@ FROM "marketing"."raw_hv_community_contact_export"
       <schema_name/>
     </partitioning>
     <connection>MARKETING</connection>
-    <schema>marketing</schema>
+    <schema>${SCHEMA}</schema>
     <table>conform_contact</table>
     <commit>1000</commit>
     <truncate>N</truncate>

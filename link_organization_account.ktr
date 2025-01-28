@@ -491,7 +491,7 @@
       </attribute>
       <attribute>
         <code>PREFERRED_SCHEMA_NAME</code>
-        <attribute>marketing</attribute>
+        <attribute>${SCHEMA}</attribute>
       </attribute>
       <attribute>
         <code>PRESERVE_RESERVED_WORD_CASE</code>
@@ -1194,7 +1194,7 @@ Return the output in this JSON array format, for example:
       <schema_name/>
     </partitioning>
     <connection>MARKETING</connection>
-    <schema>marketing</schema>
+    <schema>${SCHEMA}</schema>
     <table>ai_link_organization_account</table>
     <commit>100</commit>
     <truncate>N</truncate>
@@ -1410,7 +1410,7 @@ Return the output in this JSON array format, for example:
     <sql>SELECT
   "organization_json"
 , "block_lkp_num"
-FROM "marketing"."ai_link_organization_lkp"
+FROM ${SCHEMA}."ai_link_organization_lkp"
 </sql>
     <limit/>
     <lookup/>
@@ -1495,12 +1495,12 @@ FROM "marketing"."ai_link_organization_lkp"
     <sql>SELECT
   "account_json"
 , "block_num"
-FROM "marketing"."ai_link_account"
+FROM ${SCHEMA}."ai_link_account"
 where "block_num" not in 
 (
 SELECT DISTINCT 
   "block_num"
-FROM "marketing"."ai_link_organization_account"
+FROM ${SCHEMA}."ai_link_organization_account"
 )
 </sql>
     <limit/>
