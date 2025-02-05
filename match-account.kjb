@@ -474,7 +474,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>720</xloc>
+      <xloc>544</xloc>
       <yloc>160</yloc>
       <attributes_kjc/>
     </entry>
@@ -485,7 +485,7 @@
       <attributes/>
       <specification_method>filename</specification_method>
       <trans_object_id/>
-      <filename>/Users/khaas/OneDrive - Hitachi Vantara/Teams/ASG - General/Customers/Pentaho/MarketingInsights/main/link_organization_account.ktr</filename>
+      <filename>${Internal.Entry.Current.Directory}/link_organization_account.ktr</filename>
       <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>Y</params_from_previous>
@@ -518,7 +518,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>1</nr>
-      <xloc>896</xloc>
+      <xloc>720</xloc>
       <yloc>160</yloc>
       <attributes_kjc/>
     </entry>
@@ -538,7 +538,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>448</xloc>
+      <xloc>384</xloc>
       <yloc>160</yloc>
       <attributes_kjc/>
     </entry>

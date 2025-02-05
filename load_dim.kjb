@@ -38,6 +38,10 @@
         <attribute>N</attribute>
       </attribute>
       <attribute>
+        <code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
         <code>PORT_NUMBER</code>
         <attribute>5433</attribute>
       </attribute>
@@ -475,9 +479,9 @@
       <description/>
       <type>SQL</type>
       <attributes/>
-      <sql>UPDATE ai_enhance_organization
+      <sql>UPDATE ${SCHEMA}.ai_enhance_organization
 SET revenue = TRIM(BOTH ' ' FROM REPLACE(revenue, ' ', ''));</sql>
-      <useVariableSubstitution>F</useVariableSubstitution>
+      <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
       <sqlfilename/>
       <sendOneStatement>T</sendOneStatement>
@@ -505,7 +509,7 @@ SET revenue = TRIM(BOTH ' ' FROM REPLACE(revenue, ' ', ''));</sql>
       <to>SQL: clean spaces</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
     </hop>

@@ -474,8 +474,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>368</xloc>
-      <yloc>304</yloc>
+      <xloc>80</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -530,8 +530,8 @@ var job_name = year + month + day + hours + minutes + seconds;
       </output>
     </remotesteps>
     <GUI>
-      <xloc>704</xloc>
-      <yloc>304</yloc>
+      <xloc>256</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -549,7 +549,7 @@ var job_name = year + month + day + hours + minutes + seconds;
     <fields>
       <field>
         <field_name>job_name</field_name>
-        <variable_name>JOB_ID</variable_name>
+        <variable_name>JOB_NAME</variable_name>
         <variable_type>PARENT_JOB</variable_type>
         <default_value/>
       </field>
@@ -564,8 +564,8 @@ var job_name = year + month + day + hours + minutes + seconds;
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1072</xloc>
-      <yloc>304</yloc>
+      <xloc>448</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

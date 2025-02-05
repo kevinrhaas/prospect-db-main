@@ -578,11 +578,11 @@
     <sql>select likecrit || '%' as likecrit from 
 (
 select distinct left("Account_Name", 2) likecrit from 
-marketing.raw_pentaho_salesforce_account rpsa 
+${SCHEMA}.raw_pentaho_salesforce_account rpsa 
 where left("Account_Name", 1) not in ('''', '"') and
  left("Account_Name", 2) not in 
 (select distinct left(account_name, 2) likecrit from 
-marketing.ai_link_organization_account)
+${SCHEMA}.ai_link_organization_account)
 ) a
 order by 1</sql>
     <limit>0</limit>
