@@ -494,13 +494,13 @@
       <attributes_kjc/>
     </entry>
     <entry>
-      <name>raw_form_submits_community_edition_sign_up_form.ktr</name>
+      <name>raw_hv_community_contact_export</name>
       <description/>
       <type>TRANS</type>
       <attributes/>
       <specification_method>filename</specification_method>
       <trans_object_id/>
-      <filename>${Internal.Entry.Current.Directory}/raw_form_submits_community_edition_sign_up_form.ktr</filename>
+      <filename>${Internal.Entry.Current.Directory}/raw_hv_community_contact_export.ktr</filename>
       <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
@@ -528,8 +528,47 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>4</nr>
-      <xloc>832</xloc>
+      <xloc>848</xloc>
       <yloc>448</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>raw_sourceforge_insight_data_domain_list_report_feb_aug</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/raw_sourceforge_insight_data_domain_list_report_feb_aug.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration>
+      <suppress_result_data>N</suppress_result_data>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>848</xloc>
+      <yloc>528</yloc>
       <attributes_kjc/>
     </entry>
   </entries>
@@ -539,7 +578,7 @@
       <to>raw_ce_accounts_sourceforge.ktr</to>
       <from_nr>0</from_nr>
       <to_nr>1</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
     </hop>
@@ -548,7 +587,7 @@
       <to>raw_ce_ee_lead_interest.ktr</to>
       <from_nr>0</from_nr>
       <to_nr>2</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
     </hop>
@@ -557,15 +596,24 @@
       <to>raw_form_submits_community_edition_sign_up_form.ktr</to>
       <from_nr>0</from_nr>
       <to_nr>3</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
     </hop>
     <hop>
       <from>Start</from>
-      <to>raw_form_submits_community_edition_sign_up_form.ktr</to>
+      <to>raw_hv_community_contact_export</to>
       <from_nr>0</from_nr>
       <to_nr>4</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Start</from>
+      <to>raw_sourceforge_insight_data_domain_list_report_feb_aug</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>

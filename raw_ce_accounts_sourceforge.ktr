@@ -11,7 +11,7 @@
     <parameters>
       <parameter>
         <name>FILE_NAME</name>
-        <default_value>/Users/khaas/Library/CloudStorage/OneDrive-HitachiVantara/Teams/ASG - General/Customers/Pentaho/MarketingInsights/data/in/CE ACCOUNTS SOURCEFORGE.xlsx</default_value>
+        <default_value>/Users/rsoler/Downloads/SourceForge-Insight Data_Domain List Report All.xlsx</default_value>
         <description/>
       </parameter>
       <parameter>
@@ -627,7 +627,7 @@
     </file>
     <fields>
       <field>
-        <name>Country</name>
+        <name>Month</name>
         <type>String</type>
         <length>-1</length>
         <precision>-1</precision>
@@ -639,7 +639,127 @@
         <group/>
       </field>
       <field>
-        <name>Domain</name>
+        <name>date</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>country</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>domain</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>functional_area</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>professional_group</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>company_size</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>company_revenue</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>state</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>zip</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>industry</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>seniority</name>
         <type>String</type>
         <length>-1</length>
         <precision>-1</precision>
@@ -654,6 +774,11 @@
     <sheets>
       <sheet>
         <name>VisitorInsights_pentaho</name>
+        <startrow>0</startrow>
+        <startcol>0</startcol>
+      </sheet>
+      <sheet>
+        <name>Feb-August</name>
         <startrow>0</startrow>
         <startcol>0</startcol>
       </sheet>
@@ -722,11 +847,11 @@
     <fields>
       <field>
         <column_name>Country</column_name>
-        <stream_name>Country</stream_name>
+        <stream_name>country</stream_name>
       </field>
       <field>
         <column_name>Domain</column_name>
-        <stream_name>Domain</stream_name>
+        <stream_name>domain</stream_name>
       </field>
       <field>
         <column_name>source_name</column_name>

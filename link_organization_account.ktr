@@ -26,7 +26,7 @@
       </parameter>
       <parameter>
         <name>TEMP_PATH</name>
-        <default_value>/Users/khaas/Library/CloudStorage/OneDrive-HitachiVantara/Teams/ASG - General/Customers/Pentaho/MarketingInsights/data/tmp/</default_value>
+        <default_value>/Users/rsoler/Downloads</default_value>
         <description/>
       </parameter>
     </parameters>
@@ -455,6 +455,58 @@
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
+    <notepad>
+      <note>2
+Run after link_organization_account_prep</note>
+      <xloc>560</xloc>
+      <yloc>80</yloc>
+      <width>264</width>
+      <heigth>42</heigth>
+      <fontname>.AppleSystemUIFont</fontname>
+      <fontsize>13</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>255</backgroundcolorred>
+      <backgroundcolorgreen>205</backgroundcolorgreen>
+      <backgroundcolorblue>112</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred>
+      <bordercolorgreen>100</bordercolorgreen>
+      <bordercolorblue>100</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
+    <notepad>
+      <note>SELECT
+  "account_json"
+, "block_num"
+FROM ${SCHEMA}."ai_link_account"
+where "block_num" not in 
+(
+SELECT DISTINCT 
+  "block_num"
+FROM ${SCHEMA}."ai_link_organization_account"
+)</note>
+      <xloc>16</xloc>
+      <yloc>288</yloc>
+      <width>315</width>
+      <heigth>170</heigth>
+      <fontname>.AppleSystemUIFont</fontname>
+      <fontsize>13</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>255</backgroundcolorred>
+      <backgroundcolorgreen>205</backgroundcolorgreen>
+      <backgroundcolorblue>112</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred>
+      <bordercolorgreen>100</bordercolorgreen>
+      <bordercolorblue>100</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
   </notepads>
   <connection>
     <name>MARKETING</name>
@@ -548,7 +600,7 @@
     </hop>
     <hop>
       <from>Get system info</from>
-      <to>Table output 2</to>
+      <to>Table output: ai_link_organization_account</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -567,7 +619,7 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>ti: organization - lkp</from>
+      <from>ti: ai_link_organization_lkp</from>
       <to>Join rows (cartesian product)</to>
       <enabled>Y</enabled>
     </hop>
@@ -576,6 +628,16 @@
       <to>Join rows (cartesian product)</to>
       <enabled>Y</enabled>
     </hop>
+    <hop>
+      <from>Select values 2</from>
+      <to>AI Chat - Azure</to>
+      <enabled>N</enabled>
+    </hop>
+    <hop>
+      <from>AI Chat - Azure</from>
+      <to>Select values</to>
+      <enabled>N</enabled>
+    </hop>
   </order>
   <step>
     <name>AI Chat</name>
@@ -583,7 +645,7 @@
     <description/>
     <distribute>N</distribute>
     <custom_distribution/>
-    <copies>20</copies>
+    <copies>15</copies>
     <partitioning>
       <method>none</method>
       <schema_name/>
@@ -631,7 +693,7 @@ This is example JSON output:
     <DOCUMENT_INPUT_FILE_FROM_STREAM>organization_json</DOCUMENT_INPUT_FILE_FROM_STREAM>
     <LLM_PROVIDER>OpenAI</LLM_PROVIDER>
     <LLM_MODEL>gpt-4o-mini</LLM_MODEL>
-    <MODEL_API_KEY>sk-gszNivAuVA8iKHWK2s6T-Hz7w5mxR-URe5ZnMtF0TdT3BlbkFJFN4q6Q0c8KHcr9-mwGft81D1yJbIzhwi0J4XXg9CsA</MODEL_API_KEY>
+    <MODEL_API_KEY>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</MODEL_API_KEY>
     <MODEL_ORG_ID/>
     <MODEL_ENDPOINT/>
     <MODEL_TEMPERATURE>0.7</MODEL_TEMPERATURE>
@@ -657,8 +719,93 @@ This is example JSON output:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>848</xloc>
-      <yloc>224</yloc>
+      <xloc>720</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>AI Chat - Azure</name>
+    <type>AiChat</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <USER_MESSAGE_FROM_NATIVE>N</USER_MESSAGE_FROM_NATIVE>
+    <USER_MESSAGE>Look at the provided organization_json and focus on the 'organization' value for each of the ${BLOCK} JSON objects in the JSON array. Take the data, don't change the data or name of the organization at all, just format the text to a standardized organization name.
+Calculate a 'confidence_score': a number 1 to 100 indicating how certain you are the value is a valid organization or institution, where 1 is definitely not an organization or institution and 100 means it definitely is an organization. Return a single JSON array with each of the ${BLOCK} objects with exactly four key-value pairs for each object in the array: 
+1) 'id': the original id provided, this must not change from the original input;
+1) 'organization_standard': the standardized organization name;
+2) 'is_organization': a flag ('Y' or 'N') indicating if your believe the record represents a valid organization or institution based on your confidence score
+4) 'confidence_score': a number 1 to 100 indicating how confident you are a record fits assessment if it is a valid organization or institution
+This is example JSON output:
+[{
+    "id": 1,
+    "organization_standard": "Real Organization Name",
+    "is_organization": "Y",
+    "confidence_score": 95
+  },
+{
+    "id": 2,
+    "organization_standard": "fake organization name",
+    "is_organization": "N",
+    "confidence_score": 90
+  },
+{
+    "id": 3,
+    "organization_standard": "11111111111",
+    "is_organization": "N",
+    "confidence_score": 85
+  },
+{
+    "id": 4,
+    "organization_standard": "Self",
+    "is_organization": "N",
+    "confidence_score": 90
+  }
+]</USER_MESSAGE>
+    <USER_MESSAGE_FROM_STREAM>prompt</USER_MESSAGE_FROM_STREAM>
+    <SYSTEM_MESSAGE/>
+    <SYSTEM_MESSAGE_FROM_STREAM>instruction</SYSTEM_MESSAGE_FROM_STREAM>
+    <DOCUMENT_ATTACHMENT_NEEDED>N</DOCUMENT_ATTACHMENT_NEEDED>
+    <DOCUMENT_INPUT_FROM_FILE>N</DOCUMENT_INPUT_FROM_FILE>
+    <DOCUMENT_INPUT_FILE>${TEMP_PATH}account_0.js</DOCUMENT_INPUT_FILE>
+    <DOCUMENT_INPUT_FILE_FROM_STREAM_FIELD_FORMAT>Binary Datum</DOCUMENT_INPUT_FILE_FROM_STREAM_FIELD_FORMAT>
+    <DOCUMENT_INPUT_FILE_FROM_STREAM>organization_json</DOCUMENT_INPUT_FILE_FROM_STREAM>
+    <LLM_PROVIDER>Azure OpenAI</LLM_PROVIDER>
+    <LLM_MODEL>gpt-4o-mini</LLM_MODEL>
+    <MODEL_API_KEY>6bpo7JzwY8sqH5Go2GVK9AFoETBD3CALwfr6hy0CCPSf5GKv29QRJQQJ99BAACYeBjFXJ3w3AAABACOGS1mN</MODEL_API_KEY>
+    <MODEL_ORG_ID/>
+    <MODEL_ENDPOINT>https://rsoleropenai.openai.azure.com/</MODEL_ENDPOINT>
+    <MODEL_TEMPERATURE>0.7</MODEL_TEMPERATURE>
+    <MODEL_USE_MODERATION>Y</MODEL_USE_MODERATION>
+    <MODEL_TOKEN_CRED_CLIENT_ID/>
+    <EMBEDDING_MODELS>text-embedding-3-small</EMBEDDING_MODELS>
+    <EMBEDDING_STORE_FILE_STORE>NO Persistence</EMBEDDING_STORE_FILE_STORE>
+    <EMBEDDING_STORE_FILE_STORE_FILE_NAME/>
+    <PROXY_HOST/>
+    <PROXY_PORT>0</PROXY_PORT>
+    <PROXY_USERNAME/>
+    <PROXY_PASSWORD/>
+    <RESPONSE_OUTPUT_TYPE>text</RESPONSE_OUTPUT_TYPE>
+    <GENERATED_OUTPUT_FIELD>result</GENERATED_OUTPUT_FIELD>
+    <DOCUMENT_CHARACTER_ENCODING>UTF-8</DOCUMENT_CHARACTER_ENCODING>
+    <DOCUMENT_CHARACTER_ENCODING_FROM_STREAM/>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>736</xloc>
+      <yloc>336</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -755,7 +902,7 @@ This is example JSON output:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>624</xloc>
+      <xloc>512</xloc>
       <yloc>224</yloc>
       <draw>Y</draw>
     </GUI>
@@ -786,8 +933,8 @@ This is example JSON output:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1264</xloc>
-      <yloc>224</yloc>
+      <xloc>1168</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -825,7 +972,7 @@ This is example JSON output:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1152</xloc>
+      <xloc>1040</xloc>
       <yloc>224</yloc>
       <draw>Y</draw>
     </GUI>
@@ -856,7 +1003,7 @@ This is example JSON output:
       </field>
       <field>
         <name>prompt_main</name>
-        <variable>Based on your expert knowledge of global organization entities, ook at the above account_json and focus on the 'account_name' value for each of the ${BLOCK} JSON objects in the account JSON array.
+        <variable>Based on your expert knowledge of global organization entities, look at the above account_json and focus on the 'account_name' value for each of the ${BLOCK} JSON objects in the account JSON array.
 
 Then, look at the organization_json and focus on the 'organization_name' value for each of the ${BLOCK_LKP} JSON objects in the organization array, produce a strictly valid JSON array of matched records with the following fields:
 
@@ -920,7 +1067,7 @@ Return the output in this JSON array format, for example:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>496</xloc>
+      <xloc>384</xloc>
       <yloc>224</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1056,7 +1203,7 @@ Return the output in this JSON array format, for example:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1040</xloc>
+      <xloc>928</xloc>
       <yloc>224</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1093,7 +1240,7 @@ Return the output in this JSON array format, for example:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>352</xloc>
+      <xloc>240</xloc>
       <yloc>224</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1134,7 +1281,7 @@ Return the output in this JSON array format, for example:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>944</xloc>
+      <xloc>832</xloc>
       <yloc>224</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1177,13 +1324,13 @@ Return the output in this JSON array format, for example:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>720</xloc>
+      <xloc>624</xloc>
       <yloc>224</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Table output 2</name>
+    <name>Table output: ai_link_organization_account</name>
     <type>TableOutput</type>
     <description/>
     <distribute>Y</distribute>
@@ -1261,7 +1408,7 @@ Return the output in this JSON array format, for example:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1408</xloc>
+      <xloc>1296</xloc>
       <yloc>224</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1308,78 +1455,6 @@ Return the output in this JSON array format, for example:
       <splitevery/>
     </file>
     <fields>
-      <field>
-        <name>errd</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>errf</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>errc</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>block_num</name>
-        <type>None</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>trimmed_result</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>account_json</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
     </fields>
     <attributes/>
     <cluster_schema/>
@@ -1390,13 +1465,13 @@ Return the output in this JSON array format, for example:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1040</xloc>
-      <yloc>288</yloc>
+      <xloc>928</xloc>
+      <yloc>352</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>ti: organization - lkp</name>
+    <name>ti: ai_link_organization_lkp</name>
     <type>TableInput</type>
     <description/>
     <distribute>Y</distribute>
@@ -1475,7 +1550,7 @@ FROM ${SCHEMA}."ai_link_organization_lkp"
       </output>
     </remotesteps>
     <GUI>
-      <xloc>352</xloc>
+      <xloc>240</xloc>
       <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1501,8 +1576,7 @@ where "block_num" not in
 SELECT DISTINCT 
   "block_num"
 FROM ${SCHEMA}."ai_link_organization_account"
-)
-</sql>
+)</sql>
     <limit/>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -1530,7 +1604,7 @@ FROM ${SCHEMA}."ai_link_organization_account"
         <output_padding>N</output_padding>
         <date_format_lenient>N</date_format_lenient>
         <date_format_locale>en_US</date_format_locale>
-        <date_format_timezone>America/Chicago</date_format_timezone>
+        <date_format_timezone>America/New_York</date_format_timezone>
         <lenient_string_to_number>N</lenient_string_to_number>
       </value-meta>
       <value-meta>
@@ -1553,7 +1627,7 @@ FROM ${SCHEMA}."ai_link_organization_account"
         <output_padding>N</output_padding>
         <date_format_lenient>N</date_format_lenient>
         <date_format_locale>en_US</date_format_locale>
-        <date_format_timezone>America/Chicago</date_format_timezone>
+        <date_format_timezone>America/New_York</date_format_timezone>
         <lenient_string_to_number>N</lenient_string_to_number>
       </value-meta>
     </row-meta>
