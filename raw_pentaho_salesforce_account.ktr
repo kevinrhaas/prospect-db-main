@@ -11,7 +11,7 @@
     <parameters>
       <parameter>
         <name>FILE_NAME</name>
-        <default_value>/Users/khaas/Library/CloudStorage/OneDrive-HitachiVantara/Teams/ASG - General/Customers/Pentaho/MarketingInsights/data/in/salesforce_account_report1734634605943.csv</default_value>
+        <default_value>/Users/khaas/Library/CloudStorage/OneDrive-HitachiVantara/Teams/ASG - General/Customers/Pentaho/prospect-db/data/in/salesforce_account_feb5_report1738780023922.csv</default_value>
         <description/>
       </parameter>
       <parameter>
@@ -20,8 +20,8 @@
         <description/>
       </parameter>
       <parameter>
-        <name>TEMP_PATH</name>
-        <default_value>/Users/khaas/Library/CloudStorage/OneDrive-HitachiVantara/Teams/ASG - General/Customers/Pentaho/MarketingInsights/data/tmp/</default_value>
+        <name>SCHEMA</name>
+        <default_value>marketing_dev</default_value>
         <description/>
       </parameter>
     </parameters>
@@ -526,11 +526,6 @@
       <to>Table output</to>
       <enabled>Y</enabled>
     </hop>
-    <hop>
-      <from>Text file input</from>
-      <to>JSON output</to>
-      <enabled>Y</enabled>
-    </hop>
   </order>
   <step>
     <name>Get system info</name>
@@ -599,60 +594,6 @@
     <GUI>
       <xloc>288</xloc>
       <yloc>128</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>JSON output</name>
-    <type>JsonOutput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <outputValue>outputValue</outputValue>
-    <jsonBloc>account</jsonBloc>
-    <nrRowsInBloc>10000000</nrRowsInBloc>
-    <operation_type>both</operation_type>
-    <compatibility_mode>N</compatibility_mode>
-    <encoding>UTF-8</encoding>
-    <addtoresult>N</addtoresult>
-    <file>
-      <name>${TEMP_PATH}account</name>
-      <extention>js</extention>
-      <append>N</append>
-      <split>N</split>
-      <haspartno>N</haspartno>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <create_parent_folder>N</create_parent_folder>
-      <DoNotOpenNewFileInit>N</DoNotOpenNewFileInit>
-      <servlet_output>N</servlet_output>
-    </file>
-    <fields>
-      <field>
-        <name>Account_ID</name>
-        <element>Account_ID</element>
-      </field>
-      <field>
-        <name>Account_Name</name>
-        <element>Account_Name</element>
-      </field>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>656</xloc>
-      <yloc>224</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -748,6 +689,10 @@
       <field>
         <column_name>load_date</column_name>
         <stream_name>load_date</stream_name>
+      </field>
+      <field>
+        <column_name>Parent_Account_ID</column_name>
+        <stream_name>Parent_Account_ID</stream_name>
       </field>
     </fields>
     <attributes/>
@@ -990,6 +935,21 @@
         <ifnull/>
         <position>-1</position>
         <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Parent_Account_ID</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>255</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
         <repeat>N</repeat>
