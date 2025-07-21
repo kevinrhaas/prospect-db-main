@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>clean_organization_growing_datum</name>
+    <name>enhance_organization_location</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -10,13 +10,28 @@
     <directory>/</directory>
     <parameters>
       <parameter>
+        <name>API_KEY</name>
+        <default_value>sk-proj-SAMPLE</default_value>
+        <description/>
+      </parameter>
+      <parameter>
         <name>BLOCK</name>
         <default_value>10</default_value>
         <description/>
       </parameter>
       <parameter>
+        <name>ERR_FILE</name>
+        <default_value>/Users/khaas/Library/CloudStorage/OneDrive-HitachiVantara/Teams/ASG - General/Customers/Pentaho/prospect-db/data/tmp</default_value>
+        <description/>
+      </parameter>
+      <parameter>
         <name>JOB_NAME</name>
         <default_value>none</default_value>
+        <description/>
+      </parameter>
+      <parameter>
+        <name>SCHEMA</name>
+        <default_value>marketing_prod</default_value>
         <description/>
       </parameter>
     </parameters>
@@ -481,7 +496,7 @@
       </attribute>
       <attribute>
         <code>PREFERRED_SCHEMA_NAME</code>
-        <attribute>marketing</attribute>
+        <attribute>${SCHEMA}</attribute>
       </attribute>
       <attribute>
         <code>PRESERVE_RESERVED_WORD_CASE</code>
@@ -490,6 +505,10 @@
       <attribute>
         <code>QUOTE_ALL_FIELDS</code>
         <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SQL_CONNECT</code>
+        <attribute>SET search_path TO public, marketing_dev, marketing_prod;</attribute>
       </attribute>
       <attribute>
         <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
@@ -507,58 +526,53 @@
   </connection>
   <order>
     <hop>
+      <from>Select values</from>
+      <to>JSON input</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>AI Chat</from>
+      <to>Select values</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Get variables 2</from>
+      <to>Concat fields</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Concat fields</from>
+      <to>AI Chat</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>JSON input</from>
+      <to>Text file output</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>JSON input</from>
+      <to>Get variables</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
       <from>Get variables</from>
       <to>Get system info</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
       <from>Get system info</from>
-      <to>JSON output</to>
+      <to>Table output 2</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
       <from>Table input</from>
-      <to>Get variables</to>
+      <to>JSON output</to>
       <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Select values</from>
-      <to>JSON input</to>
-      <enabled>N</enabled>
-    </hop>
-    <hop>
-      <from>AI Chat</from>
-      <to>Modified JavaScript value</to>
-      <enabled>N</enabled>
-    </hop>
-    <hop>
-      <from>Modified JavaScript value</from>
-      <to>Select values</to>
-      <enabled>N</enabled>
-    </hop>
-    <hop>
-      <from>JSON input</from>
-      <to>Table output 2</to>
-      <enabled>N</enabled>
     </hop>
     <hop>
       <from>JSON output</from>
-      <to>Add sequence</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>JSON input</from>
-      <to>Text file output</to>
-      <enabled>N</enabled>
-    </hop>
-    <hop>
-      <from>Add sequence</from>
-      <to>AI Chat</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>AI Chat</from>
-      <to>Select values</to>
+      <to>Get variables 2</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -568,12 +582,12 @@
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
-    <copies>3</copies>
+    <copies>30</copies>
     <partitioning>
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <USER_MESSAGE_FROM_NATIVE>Y</USER_MESSAGE_FROM_NATIVE>
+    <USER_MESSAGE_FROM_NATIVE>N</USER_MESSAGE_FROM_NATIVE>
     <USER_MESSAGE>Look at the provided organization_json and focus on the 'organization' value for each of the ${BLOCK} JSON objects in the JSON array. Take the data, don't change the data or name of the organization at all, just format the text to a standardized organization name.
 Calculate a 'confidence_score': a number 1 to 100 indicating how certain you are the value is a valid organization or institution, where 1 is definitely not an organization or institution and 100 means it definitely is an organization. Return a single JSON array with each of the ${BLOCK} objects with exactly four key-value pairs for each object in the array: 
 1) 'id': the original id provided, this must not change from the original input;
@@ -606,17 +620,17 @@ This is example JSON output:
     "confidence_score": 90
   }
 ]</USER_MESSAGE>
-    <USER_MESSAGE_FROM_STREAM/>
-    <SYSTEM_MESSAGE>You are JSON object creator that is an expert in global companies and are expert at standardizing the organization name text. Your responses must only include a valid JSON array of ${BLOCK} objects with exactly two key-value pairs for each object. Do not include any headings or start with 'json'.</SYSTEM_MESSAGE>
-    <SYSTEM_MESSAGE_FROM_STREAM/>
-    <DOCUMENT_ATTACHMENT_NEEDED>Y</DOCUMENT_ATTACHMENT_NEEDED>
-    <DOCUMENT_INPUT_FROM_FILE>N</DOCUMENT_INPUT_FROM_FILE>
+    <USER_MESSAGE_FROM_STREAM>prompt</USER_MESSAGE_FROM_STREAM>
+    <SYSTEM_MESSAGE/>
+    <SYSTEM_MESSAGE_FROM_STREAM>instruction</SYSTEM_MESSAGE_FROM_STREAM>
+    <DOCUMENT_ATTACHMENT_NEEDED>N</DOCUMENT_ATTACHMENT_NEEDED>
+    <DOCUMENT_INPUT_FROM_FILE>Y</DOCUMENT_INPUT_FROM_FILE>
     <DOCUMENT_INPUT_FILE/>
     <DOCUMENT_INPUT_FILE_FROM_STREAM_FIELD_FORMAT>Binary Datum</DOCUMENT_INPUT_FILE_FROM_STREAM_FIELD_FORMAT>
     <DOCUMENT_INPUT_FILE_FROM_STREAM>organization_json</DOCUMENT_INPUT_FILE_FROM_STREAM>
     <LLM_PROVIDER>OpenAI</LLM_PROVIDER>
     <LLM_MODEL>gpt-4o-mini</LLM_MODEL>
-    <MODEL_API_KEY>sk-gszNivAuVA8iKHWK2s6T-Hz7w5mxR-URe5ZnMtF0TdT3BlbkFJFN4q6Q0c8KHcr9-mwGft81D1yJbIzhwi0J4XXg9CsA</MODEL_API_KEY>
+    <MODEL_API_KEY>${API_KEY}</MODEL_API_KEY>
     <MODEL_ORG_ID/>
     <MODEL_ENDPOINT/>
     <MODEL_TEMPERATURE>0.7</MODEL_TEMPERATURE>
@@ -642,32 +656,83 @@ This is example JSON output:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>768</xloc>
-      <yloc>160</yloc>
+      <xloc>480</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Add sequence</name>
-    <type>Sequence</type>
+    <name>Concat fields</name>
+    <type>ConcatFields</type>
     <description/>
-    <distribute>N</distribute>
+    <distribute>Y</distribute>
     <custom_distribution/>
     <copies>1</copies>
     <partitioning>
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <valuename>block</valuename>
-    <use_database>N</use_database>
-    <connection/>
-    <schema/>
-    <seqname>SEQ_</seqname>
-    <use_counter>Y</use_counter>
-    <counter_name/>
-    <start_at>1</start_at>
-    <increment_by>1</increment_by>
-    <max_value>999999999</max_value>
+    <separator>	</separator>
+    <enclosure/>
+    <enclosure_forced>N</enclosure_forced>
+    <enclosure_fix_disabled>N</enclosure_fix_disabled>
+    <header>N</header>
+    <footer>N</footer>
+    <format>DOS</format>
+    <compression>None</compression>
+    <encoding/>
+    <endedLine/>
+    <fileNameInField>N</fileNameInField>
+    <fileNameField/>
+    <create_parent_folder>Y</create_parent_folder>
+    <file>
+      <name/>
+      <servlet_output>N</servlet_output>
+      <do_not_open_new_file_init>Y</do_not_open_new_file_init>
+      <extention>txt</extention>
+      <append>N</append>
+      <split>N</split>
+      <haspartno>N</haspartno>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <SpecifyFormat>N</SpecifyFormat>
+      <date_time_format/>
+      <add_to_result_filenames>Y</add_to_result_filenames>
+      <pad>N</pad>
+      <fast_dump>N</fast_dump>
+      <splitevery>0</splitevery>
+    </file>
+    <fields>
+      <field>
+        <name>organization_json</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>prompt_end</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+    </fields>
+    <ConcatFields>
+      <targetFieldName>prompt</targetFieldName>
+      <targetFieldLength>0</targetFieldLength>
+      <removeSelectedFields>N</removeSelectedFields>
+    </ConcatFields>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -677,8 +742,8 @@ This is example JSON output:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>640</xloc>
-      <yloc>240</yloc>
+      <xloc>384</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -708,7 +773,7 @@ This is example JSON output:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>368</xloc>
+      <xloc>896</xloc>
       <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
@@ -747,7 +812,76 @@ This is example JSON output:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>240</xloc>
+      <xloc>784</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Get variables 2</name>
+    <type>GetVariable</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>instruction</name>
+        <variable>You are JSON object creator that is an expert in global companies and are expert at finding firmographic attributes. Your responses must only include a valid JSON array of ${BLOCK} objects with key-value pairs for each object. Do not include any headings or start with 'json'.</variable>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>prompt_end</name>
+        <variable>Take the organization_standard for that industry and that headquarter geo and provide three items:
+1) 'organization_standard': the standardized organization name, this must not change from the original input;
+2) ‘headquarter_geo_country’: The ISO standard country name of the country
+3) ‘headquarter_geo_state_or_province’: The ISO 2 digit standard state for US, Province for Canada, or other locality within the country
+[
+  { "organization_standard": "Microsoft Corporation",
+    "headquarter_geo_country": "United States",
+    "headquarter_geo_state_or_province": "WA"
+   },
+  { "organization_standard": "Shopify",
+    "headquarter_geo_country": "Canada",
+    "headquarter_geo_state_or_province": "ON"
+   },
+  { "organization_standard": "Siemens",
+    "headquarter_geo_country": "Germany",
+    "headquarter_geo_state_or_province": "Bavaria"
+   }
+ ]
+</variable>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>272</xloc>
       <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
@@ -785,7 +919,7 @@ This is example JSON output:
     <fields>
       <field>
         <name>organization_standard</name>
-        <path>$organizations[*].organization_standard</path>
+        <path>$[*].organization_standard</path>
         <type>String</type>
         <format/>
         <currency/>
@@ -797,8 +931,8 @@ This is example JSON output:
         <repeat>N</repeat>
       </field>
       <field>
-        <name>is_organization</name>
-        <path>$organizations[*].is_organization</path>
+        <name>headquarter_geo_country</name>
+        <path>$[*].headquarter_geo_country</path>
         <type>String</type>
         <format/>
         <currency/>
@@ -810,21 +944,8 @@ This is example JSON output:
         <repeat>N</repeat>
       </field>
       <field>
-        <name>id</name>
-        <path>$organizations[*].id</path>
-        <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>confidence_score</name>
-        <path>$organizations[*].confidence_score</path>
+        <name>headquarter_geo_state_or_province</name>
+        <path>$[*].headquarter_geo_state_or_province</path>
         <type>String</type>
         <format/>
         <currency/>
@@ -857,7 +978,7 @@ This is example JSON output:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1184</xloc>
+      <xloc>672</xloc>
       <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
@@ -866,7 +987,7 @@ This is example JSON output:
     <name>JSON output</name>
     <type>JsonOutput</type>
     <description/>
-    <distribute>Y</distribute>
+    <distribute>N</distribute>
     <custom_distribution/>
     <copies>1</copies>
     <partitioning>
@@ -894,12 +1015,16 @@ This is example JSON output:
     </file>
     <fields>
       <field>
-        <name>organization</name>
-        <element>organization</element>
+        <name>organization_standard</name>
+        <element>organization_standard</element>
       </field>
       <field>
-        <name>id</name>
-        <element>id</element>
+        <name>industry</name>
+        <element>industry</element>
+      </field>
+      <field>
+        <name>headquarter_geo</name>
+        <element>headquarter_geo</element>
       </field>
     </fields>
     <attributes/>
@@ -911,72 +1036,8 @@ This is example JSON output:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>544</xloc>
-      <yloc>352</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Modified JavaScript value</name>
-    <type>ScriptValueMod</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <compatible>N</compatible>
-    <optimizationLevel>9</optimizationLevel>
-    <jsScripts>
-      <jsScript>
-        <jsScript_type>0</jsScript_type>
-        <jsScript_name>Script 1</jsScript_name>
-        <jsScript_script>//Script here
-
-// Check and trim the quotes if needed
-var trimmed_result = trimQuotes(result);
-</jsScript_script>
-      </jsScript>
-      <jsScript>
-        <jsScript_type>1</jsScript_type>
-        <jsScript_name>Item_0</jsScript_name>
-        <jsScript_script>//Script here
-
-function trimQuotes(inputString) {
-  // Check if the input string starts and ends with quotes
-  if (
-    (inputString.startsWith('```json') &amp;&amp; inputString.endsWith('```'))
-  ) {
-    // Remove the first and last characters (quotes)
-    return inputString.slice(6, -3);
-  }
-  return inputString; // Return the original string if no quotes
-}</jsScript_script>
-      </jsScript>
-    </jsScripts>
-    <fields>
-      <field>
-        <name>trimmed_result</name>
-        <rename>trimmed_result</rename>
-        <type>String</type>
-        <length>-1</length>
-        <precision>-1</precision>
-        <replace>N</replace>
-      </field>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>928</xloc>
-      <yloc>240</yloc>
+      <xloc>144</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1010,8 +1071,8 @@ function trimQuotes(inputString) {
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1008</xloc>
-      <yloc>160</yloc>
+      <xloc>576</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1028,27 +1089,26 @@ function trimQuotes(inputString) {
     </partitioning>
     <connection>MARKETING</connection>
     <sql>SELECT
-id,
-organization
-FROM "marketing"."conform_organization"
--- where company = 'Johnson &amp; Johnson'
+organization_standard, industry, headquarter_geo
+FROM ${SCHEMA}."ai_enhance_organization" dimo
+
 </sql>
-    <limit>30</limit>
+    <limit/>
     <lookup/>
     <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
+    <variables_active>Y</variables_active>
     <lazy_conversion_active>N</lazy_conversion_active>
     <cached_row_meta_active>N</cached_row_meta_active>
     <row-meta>
       <value-meta>
-        <type>Integer</type>
+        <type>String</type>
         <storagetype>normal</storagetype>
-        <name>id</name>
-        <length>9</length>
-        <precision>0</precision>
+        <name>organization_standard</name>
+        <length>2147483647</length>
+        <precision>-1</precision>
         <origin>Table input</origin>
-        <comments>id</comments>
-        <conversion_Mask>####0;-####0</conversion_Mask>
+        <comments>organization_standard</comments>
+        <conversion_Mask/>
         <decimal_symbol>.</decimal_symbol>
         <grouping_symbol>,</grouping_symbol>
         <currency_symbol/>
@@ -1066,11 +1126,34 @@ FROM "marketing"."conform_organization"
       <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
-        <name>organization</name>
+        <name>industry</name>
         <length>2147483647</length>
         <precision>-1</precision>
         <origin>Table input</origin>
-        <comments>organization</comments>
+        <comments>industry</comments>
+        <conversion_Mask/>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol>,</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>en_US</date_format_locale>
+        <date_format_timezone>America/Chicago</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>String</type>
+        <storagetype>normal</storagetype>
+        <name>headquarter_geo</name>
+        <length>2147483647</length>
+        <precision>-1</precision>
+        <origin>Table input</origin>
+        <comments>headquarter_geo</comments>
         <conversion_Mask/>
         <decimal_symbol>.</decimal_symbol>
         <grouping_symbol>,</grouping_symbol>
@@ -1096,7 +1179,7 @@ FROM "marketing"."conform_organization"
       </output>
     </remotesteps>
     <GUI>
-      <xloc>96</xloc>
+      <xloc>48</xloc>
       <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1113,8 +1196,8 @@ FROM "marketing"."conform_organization"
       <schema_name/>
     </partitioning>
     <connection>MARKETING</connection>
-    <schema>marketing</schema>
-    <table>clean_organization</table>
+    <schema>${SCHEMA}</schema>
+    <table>ai_enhance_organization_geo</table>
     <commit>100</commit>
     <truncate>Y</truncate>
     <ignore_errors>N</ignore_errors>
@@ -1131,24 +1214,24 @@ FROM "marketing"."conform_organization"
     <return_field/>
     <fields>
       <field>
-        <column_name>conform_organization_id</column_name>
-        <stream_name>id</stream_name>
-      </field>
-      <field>
-        <column_name>api_result</column_name>
-        <stream_name>trimmed_result</stream_name>
-      </field>
-      <field>
         <column_name>organization_standard</column_name>
         <stream_name>organization_standard</stream_name>
       </field>
       <field>
-        <column_name>is_organization</column_name>
-        <stream_name>is_organization</stream_name>
+        <column_name>headquarter_geo_country</column_name>
+        <stream_name>headquarter_geo_country</stream_name>
       </field>
       <field>
-        <column_name>confidence_score</column_name>
-        <stream_name>confidence_score</stream_name>
+        <column_name>headquarter_geo_state_or_province</column_name>
+        <stream_name>headquarter_geo_state_or_province</stream_name>
+      </field>
+      <field>
+        <column_name>job_name</column_name>
+        <stream_name>job_name</stream_name>
+      </field>
+      <field>
+        <column_name>load_date</column_name>
+        <stream_name>load_date</stream_name>
       </field>
     </fields>
     <attributes/>
@@ -1160,7 +1243,7 @@ FROM "marketing"."conform_organization"
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1536</xloc>
+      <xloc>1008</xloc>
       <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1190,7 +1273,7 @@ FROM "marketing"."conform_organization"
     <fileNameField/>
     <create_parent_folder>Y</create_parent_folder>
     <file>
-      <name>err</name>
+      <name>${ERR_FILE}</name>
       <servlet_output>N</servlet_output>
       <do_not_open_new_file_init>N</do_not_open_new_file_init>
       <extention>txt</extention>
@@ -1207,78 +1290,6 @@ FROM "marketing"."conform_organization"
       <splitevery/>
     </file>
     <fields>
-      <field>
-        <name>errd</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>errf</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>errc</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>id</name>
-        <type>Integer</type>
-        <format>####0;-####0</format>
-        <currency/>
-        <decimal>.</decimal>
-        <group>,</group>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>9</length>
-        <precision>0</precision>
-      </field>
-      <field>
-        <name>result</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>contact_json</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
     </fields>
     <attributes/>
     <cluster_schema/>
@@ -1289,8 +1300,8 @@ FROM "marketing"."conform_organization"
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1184</xloc>
-      <yloc>288</yloc>
+      <xloc>672</xloc>
+      <yloc>224</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1298,7 +1309,7 @@ FROM "marketing"."conform_organization"
     <error>
       <source_step>JSON input</source_step>
       <target_step>Text file output</target_step>
-      <is_enabled>N</is_enabled>
+      <is_enabled>Y</is_enabled>
       <nr_valuename/>
       <descriptions_valuename>errd</descriptions_valuename>
       <fields_valuename>errf</fields_valuename>

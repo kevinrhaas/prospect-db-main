@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>conform_sourceforge_insight_data_domain_list_report_feb_aug</name>
+    <name>retrieve_duns_number_good</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -9,11 +9,6 @@
     <trans_status>0</trans_status>
     <directory>/</directory>
     <parameters>
-      <parameter>
-        <name>JOB_NAME</name>
-        <default_value>none</default_value>
-        <description/>
-      </parameter>
     </parameters>
     <log>
       <trans-log-table>
@@ -433,9 +428,9 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2024/12/09 09:32:57.128</created_date>
+    <created_date>2025/02/25 15:02:41.601</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2024/12/09 09:32:57.128</modified_date>
+    <modified_date>2025/02/25 15:02:41.601</modified_date>
     <key_for_session_key>H4sIAAAAAAAA/wMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
@@ -487,6 +482,10 @@
         <attribute>Y</attribute>
       </attribute>
       <attribute>
+        <code>SQL_CONNECT</code>
+        <attribute>SET search_path TO public, marketing_dev, marketing_prod;</attribute>
+      </attribute>
+      <attribute>
         <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
         <attribute>Y</attribute>
       </attribute>
@@ -502,24 +501,44 @@
   </connection>
   <order>
     <hop>
-      <from>Get variables</from>
-      <to>Get system info</to>
+      <from>HTTP client</from>
+      <to>JSON input</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Get system info</from>
-      <to>Table output</to>
+      <from>Add constants</from>
+      <to>HTTP client</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Table input</from>
-      <to>Get variables</to>
+      <from>JSON input</from>
+      <to>Text file output</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Text file input:country Codes</from>
+      <to>Stream lookup</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Table input:SalesForce</from>
+      <to>Stream lookup</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Stream lookup</from>
+      <to>Add constants</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>JSON input</from>
+      <to>Select values</to>
       <enabled>Y</enabled>
     </hop>
   </order>
   <step>
-    <name>Get system info</name>
-    <type>SystemInfo</type>
+    <name>Add constants</name>
+    <type>Constant</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -530,8 +549,76 @@
     </partitioning>
     <fields>
       <field>
-        <name>load_date</name>
-        <type>system date (variable)</type>
+        <name>agent_val</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>accept_val</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>*/*</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>accept_enc_val</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>gzip, deflate, br</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>connection_val</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>keep-alive</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>null_val</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>cache_control_val</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>no-cache</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
       </field>
     </fields>
     <attributes/>
@@ -543,14 +630,14 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>464</xloc>
+      <xloc>336</xloc>
       <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Get variables</name>
-    <type>GetVariable</type>
+    <name>HTTP client</name>
+    <type>HTTP</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -559,10 +646,105 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
+    <url>https://www.dnb.com/apps/dnb/servlets/cleanseMatchServlet</url>
+    <urlInField>N</urlInField>
+    <urlField/>
+    <encoding/>
+    <httpLogin/>
+    <httpPassword>Encrypted </httpPassword>
+    <proxyHost/>
+    <proxyPort/>
+    <socketTimeout>10000</socketTimeout>
+    <connectionTimeout>10000</connectionTimeout>
+    <closeIdleConnectionsTime>-1</closeIdleConnectionsTime>
+    <lookup>
+      <arg>
+        <name>Account_Name</name>
+        <parameter>searchTerm</parameter>
+      </arg>
+      <arg>
+        <name>Billing_Street</name>
+        <parameter>streetAddress</parameter>
+      </arg>
+      <arg>
+        <name>Billing_City</name>
+        <parameter>location</parameter>
+      </arg>
+      <arg>
+        <name>cc2</name>
+        <parameter>countryCode</parameter>
+      </arg>
+      <header>
+        <name>agent_val</name>
+        <parameter>User-Agent</parameter>
+      </header>
+      <header>
+        <name>accept_val</name>
+        <parameter>Accept</parameter>
+      </header>
+      <header>
+        <name>accept_enc_val</name>
+        <parameter>Accept-Encoding</parameter>
+      </header>
+      <header>
+        <name>connection_val</name>
+        <parameter>Connection</parameter>
+      </header>
+    </lookup>
+    <result>
+      <name>result</name>
+      <code/>
+      <response_time/>
+      <response_header/>
+    </result>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>448</xloc>
+      <yloc>128</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>JSON input</name>
+    <type>JsonInput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <include>N</include>
+    <include_field/>
+    <rownum>N</rownum>
+    <addresultfile>N</addresultfile>
+    <readurl>N</readurl>
+    <removeSourceField>N</removeSourceField>
+    <IsIgnoreEmptyFile>N</IsIgnoreEmptyFile>
+    <doNotFailIfNoFile>Y</doNotFailIfNoFile>
+    <ignoreMissingPath>Y</ignoreMissingPath>
+    <defaultPathLeafToNull>Y</defaultPathLeafToNull>
+    <includeNulls>N</includeNulls>
+    <rownum_field>rownum</rownum_field>
+    <file>
+      <name/>
+      <filemask/>
+      <exclude_filemask/>
+      <file_required>N</file_required>
+      <include_subfolders>N</include_subfolders>
+    </file>
     <fields>
       <field>
-        <name>job_name</name>
-        <variable>${JOB_NAME}</variable>
+        <name>duns</name>
+        <path>$.companies[*].duns</path>
         <type>String</type>
         <format/>
         <currency/>
@@ -571,8 +753,73 @@
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>primaryName</name>
+        <path>$.companies[*].primaryName</path>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>companyAddress</name>
+        <path>$.companies[*].companyAddress</path>
+        <type>None</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>companyRegion</name>
+        <path>$.companies[*].companyRegion</path>
+        <type>None</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>companyZipCode</name>
+        <path>$.companies[*].companyZipCode</path>
+        <type>None</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
       </field>
     </fields>
+    <limit>0</limit>
+    <IsInFields>Y</IsInFields>
+    <IsAFile>N</IsAFile>
+    <valueField>result</valueField>
+    <shortFileFieldName/>
+    <pathFieldName/>
+    <hiddenFieldName/>
+    <lastModificationTimeFieldName/>
+    <uriNameFieldName/>
+    <rootUriNameFieldName/>
+    <extensionFieldName/>
+    <sizeFieldName/>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -582,13 +829,13 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>288</xloc>
+      <xloc>560</xloc>
       <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Table input</name>
+    <name>Table input:SalesForce</name>
     <type>TableInput</type>
     <description/>
     <distribute>Y</distribute>
@@ -599,63 +846,43 @@
       <schema_name/>
     </partitioning>
     <connection>MARKETING</connection>
-    <sql>SELECT id, 
-"Month", 
-"date", 
-"Country", 
-"Domain", 
-"functional_area", 
-"professional_group", 
-"company_size", 
-"company_revenue", 
-"state", 
-"zip", 
-"industry", 
-"seniority", 
-"source_name", 
-"job_name", 
-"load_date"
-FROM ${SCHEMA}."raw_sourceforge_insight_data_domain_list_report_feb_aug"
-
-</sql>
-    <limit>0</limit>
+    <sql>SELECT
+  "Account_ID"
+, "Account_Name"
+, "Region"
+, "Billing_Street"
+, "Billing_City"
+, "Billing_State/Province"
+, "Billing_Country"
+, "Billing_Zip/Postal_Code"
+, "Account_Owner"
+, "Industry"
+, "SIC_Code"
+, "Type"
+, "Last_Activity"
+, "Annual_Revenue_(converted)_Currency"
+, "Annual_Revenue_(converted)"
+, "Last_Modified_Date"
+, "source_name"
+, "source_date"
+, "job_name"
+, "load_date"
+FROM marketing_Dev.raw_pentaho_salesforce_account_new limit 1000</sql>
+    <limit/>
     <lookup/>
     <execute_each_row>N</execute_each_row>
-    <variables_active>Y</variables_active>
+    <variables_active>N</variables_active>
     <lazy_conversion_active>N</lazy_conversion_active>
     <cached_row_meta_active>N</cached_row_meta_active>
     <row-meta>
       <value-meta>
-        <type>Integer</type>
-        <storagetype>normal</storagetype>
-        <name>id</name>
-        <length>9</length>
-        <precision>0</precision>
-        <origin>Table input</origin>
-        <comments>id</comments>
-        <conversion_Mask>####0;-####0</conversion_Mask>
-        <decimal_symbol>.</decimal_symbol>
-        <grouping_symbol>,</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
-        <date_format_timezone>America/New_York</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
-        <name>Month</name>
-        <length>2147483647</length>
+        <name>Account_ID</name>
+        <length>255</length>
         <precision>-1</precision>
-        <origin>Table input</origin>
-        <comments>Month</comments>
+        <origin>Table input:SalesForce</origin>
+        <comments>Account_ID</comments>
         <conversion_Mask/>
         <decimal_symbol>.</decimal_symbol>
         <grouping_symbol>,</grouping_symbol>
@@ -674,11 +901,11 @@ FROM ${SCHEMA}."raw_sourceforge_insight_data_domain_list_report_feb_aug"
       <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
-        <name>date</name>
-        <length>2147483647</length>
+        <name>Account_Name</name>
+        <length>255</length>
         <precision>-1</precision>
-        <origin>Table input</origin>
-        <comments>date</comments>
+        <origin>Table input:SalesForce</origin>
+        <comments>Account_Name</comments>
         <conversion_Mask/>
         <decimal_symbol>.</decimal_symbol>
         <grouping_symbol>,</grouping_symbol>
@@ -697,11 +924,11 @@ FROM ${SCHEMA}."raw_sourceforge_insight_data_domain_list_report_feb_aug"
       <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
-        <name>Country</name>
-        <length>2147483647</length>
+        <name>Region</name>
+        <length>255</length>
         <precision>-1</precision>
-        <origin>Table input</origin>
-        <comments>Country</comments>
+        <origin>Table input:SalesForce</origin>
+        <comments>Region</comments>
         <conversion_Mask/>
         <decimal_symbol>.</decimal_symbol>
         <grouping_symbol>,</grouping_symbol>
@@ -720,11 +947,11 @@ FROM ${SCHEMA}."raw_sourceforge_insight_data_domain_list_report_feb_aug"
       <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
-        <name>Domain</name>
-        <length>2147483647</length>
+        <name>Billing_Street</name>
+        <length>255</length>
         <precision>-1</precision>
-        <origin>Table input</origin>
-        <comments>Domain</comments>
+        <origin>Table input:SalesForce</origin>
+        <comments>Billing_Street</comments>
         <conversion_Mask/>
         <decimal_symbol>.</decimal_symbol>
         <grouping_symbol>,</grouping_symbol>
@@ -743,11 +970,11 @@ FROM ${SCHEMA}."raw_sourceforge_insight_data_domain_list_report_feb_aug"
       <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
-        <name>functional_area</name>
-        <length>2147483647</length>
+        <name>Billing_City</name>
+        <length>255</length>
         <precision>-1</precision>
-        <origin>Table input</origin>
-        <comments>functional_area</comments>
+        <origin>Table input:SalesForce</origin>
+        <comments>Billing_City</comments>
         <conversion_Mask/>
         <decimal_symbol>.</decimal_symbol>
         <grouping_symbol>,</grouping_symbol>
@@ -766,11 +993,11 @@ FROM ${SCHEMA}."raw_sourceforge_insight_data_domain_list_report_feb_aug"
       <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
-        <name>professional_group</name>
-        <length>2147483647</length>
+        <name>Billing_State/Province</name>
+        <length>255</length>
         <precision>-1</precision>
-        <origin>Table input</origin>
-        <comments>professional_group</comments>
+        <origin>Table input:SalesForce</origin>
+        <comments>Billing_State/Province</comments>
         <conversion_Mask/>
         <decimal_symbol>.</decimal_symbol>
         <grouping_symbol>,</grouping_symbol>
@@ -789,11 +1016,11 @@ FROM ${SCHEMA}."raw_sourceforge_insight_data_domain_list_report_feb_aug"
       <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
-        <name>company_size</name>
-        <length>2147483647</length>
+        <name>Billing_Country</name>
+        <length>255</length>
         <precision>-1</precision>
-        <origin>Table input</origin>
-        <comments>company_size</comments>
+        <origin>Table input:SalesForce</origin>
+        <comments>Billing_Country</comments>
         <conversion_Mask/>
         <decimal_symbol>.</decimal_symbol>
         <grouping_symbol>,</grouping_symbol>
@@ -812,11 +1039,11 @@ FROM ${SCHEMA}."raw_sourceforge_insight_data_domain_list_report_feb_aug"
       <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
-        <name>company_revenue</name>
-        <length>2147483647</length>
+        <name>Billing_Zip/Postal_Code</name>
+        <length>255</length>
         <precision>-1</precision>
-        <origin>Table input</origin>
-        <comments>company_revenue</comments>
+        <origin>Table input:SalesForce</origin>
+        <comments>Billing_Zip/Postal_Code</comments>
         <conversion_Mask/>
         <decimal_symbol>.</decimal_symbol>
         <grouping_symbol>,</grouping_symbol>
@@ -835,11 +1062,11 @@ FROM ${SCHEMA}."raw_sourceforge_insight_data_domain_list_report_feb_aug"
       <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
-        <name>state</name>
-        <length>2147483647</length>
+        <name>Account_Owner</name>
+        <length>255</length>
         <precision>-1</precision>
-        <origin>Table input</origin>
-        <comments>state</comments>
+        <origin>Table input:SalesForce</origin>
+        <comments>Account_Owner</comments>
         <conversion_Mask/>
         <decimal_symbol>.</decimal_symbol>
         <grouping_symbol>,</grouping_symbol>
@@ -858,11 +1085,11 @@ FROM ${SCHEMA}."raw_sourceforge_insight_data_domain_list_report_feb_aug"
       <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
-        <name>zip</name>
-        <length>2147483647</length>
+        <name>Industry</name>
+        <length>255</length>
         <precision>-1</precision>
-        <origin>Table input</origin>
-        <comments>zip</comments>
+        <origin>Table input:SalesForce</origin>
+        <comments>Industry</comments>
         <conversion_Mask/>
         <decimal_symbol>.</decimal_symbol>
         <grouping_symbol>,</grouping_symbol>
@@ -881,11 +1108,11 @@ FROM ${SCHEMA}."raw_sourceforge_insight_data_domain_list_report_feb_aug"
       <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
-        <name>industry</name>
-        <length>2147483647</length>
+        <name>SIC_Code</name>
+        <length>255</length>
         <precision>-1</precision>
-        <origin>Table input</origin>
-        <comments>industry</comments>
+        <origin>Table input:SalesForce</origin>
+        <comments>SIC_Code</comments>
         <conversion_Mask/>
         <decimal_symbol>.</decimal_symbol>
         <grouping_symbol>,</grouping_symbol>
@@ -904,11 +1131,103 @@ FROM ${SCHEMA}."raw_sourceforge_insight_data_domain_list_report_feb_aug"
       <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
-        <name>seniority</name>
-        <length>2147483647</length>
+        <name>Type</name>
+        <length>255</length>
         <precision>-1</precision>
-        <origin>Table input</origin>
-        <comments>seniority</comments>
+        <origin>Table input:SalesForce</origin>
+        <comments>Type</comments>
+        <conversion_Mask/>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol>,</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>en_US</date_format_locale>
+        <date_format_timezone>America/New_York</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>Timestamp</type>
+        <storagetype>normal</storagetype>
+        <name>Last_Activity</name>
+        <length>6</length>
+        <precision>-1</precision>
+        <origin>Table input:SalesForce</origin>
+        <comments>Last_Activity</comments>
+        <conversion_Mask/>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol>,</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>en_US</date_format_locale>
+        <date_format_timezone>America/New_York</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>String</type>
+        <storagetype>normal</storagetype>
+        <name>Annual_Revenue_(converted)_Currency</name>
+        <length>255</length>
+        <precision>-1</precision>
+        <origin>Table input:SalesForce</origin>
+        <comments>Annual_Revenue_(converted)_Currency</comments>
+        <conversion_Mask/>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol>,</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>en_US</date_format_locale>
+        <date_format_timezone>America/New_York</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>Number</type>
+        <storagetype>normal</storagetype>
+        <name>Annual_Revenue_(converted)</name>
+        <length>-1</length>
+        <precision>-1</precision>
+        <origin>Table input:SalesForce</origin>
+        <comments>Annual_Revenue_(converted)</comments>
+        <conversion_Mask>####0.0#########;-####0.0#########</conversion_Mask>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol>,</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>en_US</date_format_locale>
+        <date_format_timezone>America/New_York</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>Timestamp</type>
+        <storagetype>normal</storagetype>
+        <name>Last_Modified_Date</name>
+        <length>6</length>
+        <precision>-1</precision>
+        <origin>Table input:SalesForce</origin>
+        <comments>Last_Modified_Date</comments>
         <conversion_Mask/>
         <decimal_symbol>.</decimal_symbol>
         <grouping_symbol>,</grouping_symbol>
@@ -930,8 +1249,31 @@ FROM ${SCHEMA}."raw_sourceforge_insight_data_domain_list_report_feb_aug"
         <name>source_name</name>
         <length>255</length>
         <precision>-1</precision>
-        <origin>Table input</origin>
+        <origin>Table input:SalesForce</origin>
         <comments>source_name</comments>
+        <conversion_Mask/>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol>,</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>en_US</date_format_locale>
+        <date_format_timezone>America/New_York</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>Timestamp</type>
+        <storagetype>normal</storagetype>
+        <name>source_date</name>
+        <length>6</length>
+        <precision>-1</precision>
+        <origin>Table input:SalesForce</origin>
+        <comments>source_date</comments>
         <conversion_Mask/>
         <decimal_symbol>.</decimal_symbol>
         <grouping_symbol>,</grouping_symbol>
@@ -953,7 +1295,7 @@ FROM ${SCHEMA}."raw_sourceforge_insight_data_domain_list_report_feb_aug"
         <name>job_name</name>
         <length>255</length>
         <precision>-1</precision>
-        <origin>Table input</origin>
+        <origin>Table input:SalesForce</origin>
         <comments>job_name</comments>
         <conversion_Mask/>
         <decimal_symbol>.</decimal_symbol>
@@ -976,7 +1318,7 @@ FROM ${SCHEMA}."raw_sourceforge_insight_data_domain_list_report_feb_aug"
         <name>load_date</name>
         <length>6</length>
         <precision>-1</precision>
-        <origin>Table input</origin>
+        <origin>Table input:SalesForce</origin>
         <comments>load_date</comments>
         <conversion_Mask/>
         <decimal_symbol>.</decimal_symbol>
@@ -1003,14 +1345,14 @@ FROM ${SCHEMA}."raw_sourceforge_insight_data_domain_list_report_feb_aug"
       </output>
     </remotesteps>
     <GUI>
-      <xloc>96</xloc>
+      <xloc>80</xloc>
       <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Table output</name>
-    <type>TableOutput</type>
+    <name>Text file output</name>
+    <type>TextFileOutput</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -1019,87 +1361,300 @@ FROM ${SCHEMA}."raw_sourceforge_insight_data_domain_list_report_feb_aug"
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>MARKETING</connection>
-    <schema>${SCHEMA}</schema>
-    <table>conform_contact</table>
-    <commit>1000</commit>
-    <truncate>N</truncate>
-    <ignore_errors>N</ignore_errors>
-    <use_batch>Y</use_batch>
-    <specify_fields>Y</specify_fields>
-    <partitioning_enabled>N</partitioning_enabled>
-    <partitioning_field/>
-    <partitioning_daily>N</partitioning_daily>
-    <partitioning_monthly>Y</partitioning_monthly>
-    <tablename_in_field>N</tablename_in_field>
-    <tablename_field/>
-    <tablename_in_table>Y</tablename_in_table>
-    <return_keys>N</return_keys>
-    <return_field/>
+    <separator>|</separator>
+    <enclosure>"</enclosure>
+    <enclosure_forced>N</enclosure_forced>
+    <enclosure_fix_disabled>N</enclosure_fix_disabled>
+    <header>Y</header>
+    <footer>N</footer>
+    <format>DOS</format>
+    <compression>None</compression>
+    <encoding>UTF-8</encoding>
+    <endedLine/>
+    <fileNameInField>N</fileNameInField>
+    <fileNameField/>
+    <create_parent_folder>Y</create_parent_folder>
+    <file>
+      <name>/tmp/duns_file</name>
+      <servlet_output>N</servlet_output>
+      <do_not_open_new_file_init>N</do_not_open_new_file_init>
+      <extention>txt</extention>
+      <append>N</append>
+      <split>N</split>
+      <haspartno>N</haspartno>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <SpecifyFormat>N</SpecifyFormat>
+      <date_time_format/>
+      <add_to_result_filenames>Y</add_to_result_filenames>
+      <pad>N</pad>
+      <fast_dump>N</fast_dump>
+      <splitevery/>
+    </file>
     <fields>
       <field>
-        <column_name>source_id_assigned</column_name>
-        <stream_name>id</stream_name>
+        <name>Account_ID</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
       </field>
       <field>
-        <column_name>Month</column_name>
-        <stream_name>Month</stream_name>
+        <name>Region</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
       </field>
       <field>
-        <column_name>date</column_name>
-        <stream_name>date</stream_name>
+        <name>Billing_City</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
       </field>
       <field>
-        <column_name>country</column_name>
-        <stream_name>Country</stream_name>
+        <name>Billing_State/Province</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
       </field>
       <field>
-        <column_name>website</column_name>
-        <stream_name>Domain</stream_name>
+        <name>Billing_Country</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
       </field>
       <field>
-        <column_name>functional_area</column_name>
-        <stream_name>functional_area</stream_name>
+        <name>Billing_Zip/Postal_Code</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
       </field>
       <field>
-        <column_name>professional_group</column_name>
-        <stream_name>professional_group</stream_name>
+        <name>Account_Owner</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
       </field>
       <field>
-        <column_name>company_size</column_name>
-        <stream_name>company_size</stream_name>
+        <name>Industry</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
       </field>
       <field>
-        <column_name>company_revenue</column_name>
-        <stream_name>company_revenue</stream_name>
+        <name>SIC_Code</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
       </field>
       <field>
-        <column_name>state</column_name>
-        <stream_name>state</stream_name>
+        <name>Type</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
       </field>
       <field>
-        <column_name>postal_code</column_name>
-        <stream_name>zip</stream_name>
+        <name>Last_Activity</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
       </field>
       <field>
-        <column_name>industry</column_name>
-        <stream_name>industry</stream_name>
+        <name>Annual_Revenue_(converted)_Currency</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
       </field>
       <field>
-        <column_name>seniority</column_name>
-        <stream_name>seniority</stream_name>
+        <name>Annual_Revenue_(converted)</name>
+        <type>String</type>
+        <format>0.#####</format>
+        <currency/>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
       </field>
       <field>
-        <column_name>source_name</column_name>
-        <stream_name>source_name</stream_name>
+        <name>Last_Modified_Date</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
       </field>
       <field>
-        <column_name>job_name</column_name>
-        <stream_name>job_name</stream_name>
+        <name>cc2</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
       </field>
       <field>
-        <column_name>load_date</column_name>
-        <stream_name>load_date</stream_name>
+        <name>Account_Name</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>Billing_Street</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>duns</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>primaryName</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>companyAddress</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>companyRegion</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>companyZipCode</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
       </field>
     </fields>
     <attributes/>
@@ -1111,8 +1666,250 @@ FROM ${SCHEMA}."raw_sourceforge_insight_data_domain_list_report_feb_aug"
       </output>
     </remotesteps>
     <GUI>
-      <xloc>656</xloc>
+      <xloc>688</xloc>
       <yloc>128</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Stream lookup</name>
+    <type>StreamLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <from>Text file input:country Codes</from>
+    <input_sorted>N</input_sorted>
+    <preserve_memory>Y</preserve_memory>
+    <sorted_list>N</sorted_list>
+    <integer_pair>N</integer_pair>
+    <lookup>
+      <key>
+        <name>Billing_Country</name>
+        <field>country_name</field>
+      </key>
+      <value>
+        <name>country_code</name>
+        <rename>cc2</rename>
+        <default/>
+        <type>String</type>
+      </value>
+    </lookup>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>208</xloc>
+      <yloc>128</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Text file input:country Codes</name>
+    <type>TextFileInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <accept_filenames>N</accept_filenames>
+    <passing_through_fields>N</passing_through_fields>
+    <accept_field/>
+    <accept_stepname/>
+    <separator>|</separator>
+    <enclosure>"</enclosure>
+    <enclosure_breaks>N</enclosure_breaks>
+    <escapechar/>
+    <header>N</header>
+    <nr_headerlines>1</nr_headerlines>
+    <footer>N</footer>
+    <nr_footerlines>1</nr_footerlines>
+    <line_wrapped>N</line_wrapped>
+    <nr_wraps>1</nr_wraps>
+    <layout_paged>N</layout_paged>
+    <nr_lines_per_page>80</nr_lines_per_page>
+    <nr_lines_doc_header>0</nr_lines_doc_header>
+    <noempty>Y</noempty>
+    <include>N</include>
+    <include_field/>
+    <rownum>N</rownum>
+    <rownumByFile>N</rownumByFile>
+    <rownum_field/>
+    <format>Unix</format>
+    <encoding>UTF-8</encoding>
+    <length>Characters</length>
+    <add_to_result_filenames>Y</add_to_result_filenames>
+    <file>
+      <name>/tmp/country_codes.txt</name>
+      <filemask/>
+      <exclude_filemask/>
+      <file_required>N</file_required>
+      <include_subfolders>N</include_subfolders>
+      <type>CSV</type>
+      <compression>None</compression>
+    </file>
+    <filters>
+    </filters>
+    <fields>
+      <field>
+        <name>country_name</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>country_code</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
+        <repeat>N</repeat>
+      </field>
+    </fields>
+    <limit>0</limit>
+    <error_ignored>N</error_ignored>
+    <skip_bad_files>N</skip_bad_files>
+    <file_error_field/>
+    <file_error_message_field/>
+    <error_line_skipped>N</error_line_skipped>
+    <error_count_field/>
+    <error_fields_field/>
+    <error_text_field/>
+    <bad_line_files_destination_directory/>
+    <bad_line_files_extension>warning</bad_line_files_extension>
+    <error_line_files_destination_directory/>
+    <error_line_files_extension>error</error_line_files_extension>
+    <line_number_files_destination_directory/>
+    <line_number_files_extension>line</line_number_files_extension>
+    <date_format_lenient>Y</date_format_lenient>
+    <date_format_locale>en_US</date_format_locale>
+    <shortFileFieldName/>
+    <pathFieldName/>
+    <hiddenFieldName/>
+    <lastModificationTimeFieldName/>
+    <uriNameFieldName/>
+    <rootUriNameFieldName/>
+    <extensionFieldName/>
+    <sizeFieldName/>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>208</xloc>
+      <yloc>32</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Select values</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>Account_ID</name>
+        <rename/>
+      </field>
+      <field>
+        <name>Account_Name</name>
+        <rename/>
+      </field>
+      <field>
+        <name>Region</name>
+        <rename/>
+      </field>
+      <field>
+        <name>Billing_Street</name>
+        <rename/>
+      </field>
+      <field>
+        <name>Billing_City</name>
+        <rename/>
+      </field>
+      <field>
+        <name>Billing_State/Province</name>
+        <rename/>
+      </field>
+      <field>
+        <name>Billing_Country</name>
+        <rename/>
+      </field>
+      <field>
+        <name>Billing_Zip/Postal_Code</name>
+        <rename/>
+      </field>
+      <field>
+        <name>duns</name>
+        <rename/>
+      </field>
+      <field>
+        <name>primaryName</name>
+        <rename/>
+      </field>
+      <field>
+        <name>companyAddress</name>
+        <rename/>
+      </field>
+      <field>
+        <name>companyRegion</name>
+        <rename/>
+      </field>
+      <field>
+        <name>companyZipCode</name>
+        <rename/>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>560</xloc>
+      <yloc>240</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

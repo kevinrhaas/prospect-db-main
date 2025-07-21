@@ -11,7 +11,7 @@
     <parameters>
       <parameter>
         <name>FILE_NAME</name>
-        <default_value>/Users/khaas/Library/CloudStorage/OneDrive-HitachiVantara/Teams/ASG - General/Customers/Pentaho/prospect-db/data/in/salesforce_account_feb5_report1738780023922.csv</default_value>
+        <default_value>/Users/khaas/Library/CloudStorage/OneDrive-HitachiVantara/Teams/ASG - General/Customers/Pentaho/prospect-db/data/in/salesforce_account_report1740517855244.csv</default_value>
         <description/>
       </parameter>
       <parameter>
@@ -497,6 +497,10 @@
         <attribute>Y</attribute>
       </attribute>
       <attribute>
+        <code>SQL_CONNECT</code>
+        <attribute>SET search_path TO public, marketing_dev, marketing_prod;</attribute>
+      </attribute>
+      <attribute>
         <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
         <attribute>Y</attribute>
       </attribute>
@@ -610,7 +614,7 @@
     </partitioning>
     <connection>MARKETING</connection>
     <schema>${SCHEMA}</schema>
-    <table>raw_pentaho_salesforce_account</table>
+    <table>raw_pentaho_salesforce_account_new</table>
     <commit>1000</commit>
     <truncate>Y</truncate>
     <ignore_errors>N</ignore_errors>
@@ -639,8 +643,24 @@
         <stream_name>Region</stream_name>
       </field>
       <field>
+        <column_name>Billing_Street</column_name>
+        <stream_name>Billing_Street</stream_name>
+      </field>
+      <field>
+        <column_name>Billing_City</column_name>
+        <stream_name>Billing_City</stream_name>
+      </field>
+      <field>
         <column_name>Billing_State/Province</column_name>
         <stream_name>Billing_State/Province</stream_name>
+      </field>
+      <field>
+        <column_name>Billing_Country</column_name>
+        <stream_name>Billing_Country</stream_name>
+      </field>
+      <field>
+        <column_name>Billing_Zip/Postal_Code</column_name>
+        <stream_name>Billing_Zip/Postal_Code</stream_name>
       </field>
       <field>
         <column_name>Account_Owner</column_name>
@@ -689,10 +709,6 @@
       <field>
         <column_name>load_date</column_name>
         <stream_name>load_date</stream_name>
-      </field>
-      <field>
-        <column_name>Parent_Account_ID</column_name>
-        <stream_name>Parent_Account_ID</stream_name>
       </field>
     </fields>
     <attributes/>
@@ -763,7 +779,7 @@
         <name>Account_ID</name>
         <type>String</type>
         <format/>
-        <currency/>
+        <currency>USD</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
@@ -778,7 +794,7 @@
         <name>Account_Name</name>
         <type>String</type>
         <format/>
-        <currency/>
+        <currency>USD</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
@@ -793,7 +809,37 @@
         <name>Region</name>
         <type>String</type>
         <format/>
-        <currency/>
+        <currency>USD</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>255</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Billing_Street</name>
+        <type>String</type>
+        <format/>
+        <currency>USD</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>255</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Billing_City</name>
+        <type>String</type>
+        <format/>
+        <currency>USD</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
@@ -808,7 +854,37 @@
         <name>Billing_State/Province</name>
         <type>String</type>
         <format/>
-        <currency/>
+        <currency>USD</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>255</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Billing_Country</name>
+        <type>String</type>
+        <format/>
+        <currency>USD</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>255</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Billing_Zip/Postal_Code</name>
+        <type>String</type>
+        <format/>
+        <currency>USD</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
@@ -823,7 +899,7 @@
         <name>Account_Owner</name>
         <type>String</type>
         <format/>
-        <currency/>
+        <currency>USD</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
@@ -838,7 +914,7 @@
         <name>Industry</name>
         <type>String</type>
         <format/>
-        <currency/>
+        <currency>USD</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
@@ -851,15 +927,15 @@
       </field>
       <field>
         <name>SIC_Code</name>
-        <type>Integer</type>
-        <format>#</format>
-        <currency/>
+        <type>String</type>
+        <format/>
+        <currency>USD</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>15</length>
+        <length>255</length>
         <precision>0</precision>
         <trim_type>none</trim_type>
         <repeat>N</repeat>
@@ -868,7 +944,7 @@
         <name>Type</name>
         <type>String</type>
         <format/>
-        <currency/>
+        <currency>USD</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
@@ -883,7 +959,7 @@
         <name>Last_Activity</name>
         <type>Date</type>
         <format>MM/dd/yyyy</format>
-        <currency/>
+        <currency>USD</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
@@ -898,7 +974,7 @@
         <name>Annual_Revenue_(converted)_Currency</name>
         <type>String</type>
         <format/>
-        <currency/>
+        <currency>USD</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
@@ -913,13 +989,13 @@
         <name>Annual_Revenue_(converted)</name>
         <type>BigNumber</type>
         <format>#.##</format>
-        <currency/>
+        <currency>USD</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>15</length>
+        <length>-1</length>
         <precision>2</precision>
         <trim_type>none</trim_type>
         <repeat>N</repeat>
@@ -928,22 +1004,7 @@
         <name>Last_Modified_Date</name>
         <type>Date</type>
         <format>MM/dd/yyyy</format>
-        <currency/>
-        <decimal>.</decimal>
-        <group>,</group>
-        <nullif>-</nullif>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>Parent_Account_ID</name>
-        <type>String</type>
-        <format/>
-        <currency/>
+        <currency>USD</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
